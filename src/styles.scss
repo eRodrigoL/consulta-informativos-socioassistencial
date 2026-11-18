@@ -12,7 +12,12 @@
 
 * { box-sizing: border-box; }
 body { margin: 0; }
-app-root { display: flex; min-height: 100vh; flex-direction: column; }
+app-root {
+  display: flex;
+  min-height: 100vh;
+  min-height: 100dvh;
+  flex-direction: column;
+}
 router-outlet + * { flex: 1; }
 a { color: inherit; text-underline-offset: .2em; }
 a:focus-visible, button:focus-visible, summary:focus-visible {
@@ -24,11 +29,11 @@ h1, h2, p { margin: 0; }
 
 .home-page { display: flex; }
 .hero { display: grid; align-items: center; width: 100%; background: var(--surface); }
-.hero-inner { padding-block: clamp(3rem, 9vw, 7rem); }
+.hero-inner { padding-block: clamp(1.25rem, 6dvh, 4rem); }
 .hero h1 {
   max-width: 21ch;
   margin-bottom: 1rem;
-  font: 700 clamp(2.5rem, 5.5vw, 4.9rem)/1.03 Georgia, serif;
+  font: 700 clamp(2rem, min(5.5vw, 10dvh), 4.9rem)/1.03 Georgia, serif;
   letter-spacing: -.045em;
 }
 .intro { max-width: 48ch; font-size: 1.13rem; }
@@ -44,7 +49,10 @@ h1, h2, p { margin: 0; }
 }
 .cta:hover { background: var(--accent-dark); }
 
-.explore { padding-block: 2rem 3rem; }
+.wrap.explore {
+  width: calc(100% - 2 * clamp(1rem, 2vw, 2rem));
+  padding-block: 2rem 3rem;
+}
 .explore h1 { margin-block: .65rem 1.25rem; font: 700 clamp(2rem, 5vw, 3rem)/1.08 Georgia, serif; }
 .topics {
   display: grid;
