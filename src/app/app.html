@@ -1,52 +1,5 @@
-<a class="skip" href="#conteudo">Ir para o conteúdo</a>
-<header class="top">
-  <div class="wrap top-inner">
-    <a class="brand" href="./"><span class="mark" aria-hidden="true">+</span> Consulta socioassistencial</a>
-    <nav aria-label="Navegação principal">
-      <a href="#assuntos">Assuntos</a>
-      <a href="#atualizacoes">Atualizações</a>
-    </nav>
-  </div>
-</header>
+<router-outlet />
 
-<main id="conteudo">
-  <section class="hero">
-    <div class="wrap hero-inner">
-      <div>
-        <p class="eyebrow">Sistema Único de Assistência Social</p>
-        <h1>Referências para o atendimento nos CRAS</h1>
-        <p class="intro">Um espaço de consulta para profissionais do SUAS, com fichas técnicas fundamentadas em fontes oficiais.</p>
-        <a class="cta" href="#assuntos">Explorar assuntos <span aria-hidden="true">↓</span></a>
-      </div>
-      <aside class="status">
-        <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Em desenvolvimento</p>
-        <h2>Primeiros conteúdos</h2>
-        <p>As fichas de PAIF e SCFV estão em preparação e serão disponibilizadas após revisão editorial.</p>
-      </aside>
-    </div>
-  </section>
-
-  <div class="wrap sections">
-    <section id="assuntos">
-      <h2>Assuntos</h2>
-      <div class="topics">
-        <div class="topic-tree" role="group" aria-label="Proteção Social Básica">
-          <p>Proteção Social Básica</p>
-          <button type="button" [attr.aria-pressed]="topic() === 'PAIF'" (click)="topic.set('PAIF')">PAIF</button>
-          <button type="button" [attr.aria-pressed]="topic() === 'SCFV'" (click)="topic.set('SCFV')">SCFV</button>
-        </div>
-        <div class="topic-detail" aria-live="polite">
-          <h3>{{ topic() === 'PAIF' ? 'Serviço de Proteção e Atendimento Integral à Família' : 'Serviço de Convivência e Fortalecimento de Vínculos' }}</h3>
-          <p>Fichas em preparação.</p>
-        </div>
-      </div>
-    </section>
-    <section id="atualizacoes" class="updates">
-      <h2>Atualizações</h2>
-      <p class="period">Últimos 30 dias</p>
-      <p>Nenhuma atualização publicada neste período.</p>
-    </section>
-  </div>
-</main>
-
-<footer><div class="wrap">Consulta de Informativos Socioassistenciais</div></footer>
+<footer>
+  <div class="wrap">Desenvolvido por <a href="https://github.com/eRodrigoL">eRodrigoL</a></div>
+</footer>
