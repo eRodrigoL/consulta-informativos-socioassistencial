@@ -1,0 +1,26 @@
+<main class="wrap explore">
+  <a class="back" routerLink="/">Voltar ao início</a>
+  <h1>Consulta socioassistencial</h1>
+  <div class="topics">
+    <nav class="topic-tree" aria-label="Assuntos">
+      <button type="button" [attr.aria-pressed]="section() === 'atualizacoes'" (click)="section.set('atualizacoes')">Atualizações</button>
+      <details open>
+        <summary>Proteção Social Básica</summary>
+        <div class="topic-children">
+          <button type="button" [attr.aria-pressed]="section() === 'PAIF'" (click)="section.set('PAIF')">PAIF</button>
+          <button type="button" [attr.aria-pressed]="section() === 'SCFV'" (click)="section.set('SCFV')">SCFV</button>
+        </div>
+      </details>
+    </nav>
+    <section class="topic-detail" aria-live="polite">
+      @if (section() === 'atualizacoes') {
+        <h2>Atualizações</h2>
+        <p><strong>Últimos 30 dias</strong></p>
+        <p>Nenhuma atualização publicada neste período.</p>
+      } @else {
+        <h2>{{ section() === 'PAIF' ? 'Serviço de Proteção e Atendimento Integral à Família' : 'Serviço de Convivência e Fortalecimento de Vínculos' }}</h2>
+        <p>Fichas em preparação.</p>
+      }
+    </section>
+  </div>
+</main>
