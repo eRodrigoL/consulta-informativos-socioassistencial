@@ -49,10 +49,11 @@ h1, h2, p { margin: 0; }
 }
 .cta:hover { background: var(--accent-dark); }
 
-.wrap.explore {
+.wrap.explore,
+.explore-page + footer .wrap {
   width: calc(100% - 2 * clamp(1rem, 2vw, 2rem));
-  padding-block: 2rem 3rem;
 }
+.explore { padding-block: 2rem 3rem; }
 .explore h1 { margin-block: .65rem 1.25rem; font: 700 clamp(2rem, 5vw, 3rem)/1.08 Georgia, serif; }
 .topics {
   display: grid;

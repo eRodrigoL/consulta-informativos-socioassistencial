@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 
 @Component({
   imports: [RouterLink],
+  host: { class: 'explore-page' },
   templateUrl: './explore.html',
 })
 export class Explore {
