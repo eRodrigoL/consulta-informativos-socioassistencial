@@ -23,3 +23,11 @@ O projeto está em planejamento. O próximo marco é validar o modelo editorial 
 ## Contribuição
 
 Consulte as [convenções Git para branches e commits](https://github.com/eRodrigoL/docs/blob/main/conven%C3%A7%C3%B5es-git--branches-e-commits.md).
+
+## Desenvolvimento local
+
+Use Node.js 24. Instale as dependências com `npm ci` e inicie o servidor com `npm start`.
+
+## Publicação estática
+
+Execute `npm run build` para gerar a página. O diretório de publicação é `dist/consulta-cras/browser`. No Cloudflare Pages, configure esse diretório como saída e use `npm run build` como comando de compilação.
