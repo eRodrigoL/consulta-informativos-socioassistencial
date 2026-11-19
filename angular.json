@@ -75,6 +75,10 @@
             },
             "development": {
               "optimization": false,
+              "assets": [
+                { "glob": "**/*", "input": "public" },
+                { "glob": "beneficios.previa.json", "input": ".preview", "output": "/" }
+              ],
               "extractLicenses": false,
               "sourceMap": true
             }

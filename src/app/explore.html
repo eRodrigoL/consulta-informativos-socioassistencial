@@ -1,26 +1,137 @@
 <main class="wrap explore">
-  <a class="back" routerLink="/">Voltar ao início</a>
-  <h1>Consulta socioassistencial</h1>
-  <div class="topics">
-    <nav class="topic-tree" aria-label="Assuntos">
-      <button type="button" [attr.aria-pressed]="section() === 'atualizacoes'" (click)="section.set('atualizacoes')">Atualizações</button>
-      <details open>
-        <summary>Proteção Social Básica</summary>
-        <div class="topic-children">
-          <button type="button" [attr.aria-pressed]="section() === 'PAIF'" (click)="section.set('PAIF')">PAIF</button>
-          <button type="button" [attr.aria-pressed]="section() === 'SCFV'" (click)="section.set('SCFV')">SCFV</button>
-        </div>
-      </details>
-    </nav>
-    <section class="topic-detail" aria-live="polite">
-      @if (section() === 'atualizacoes') {
-        <h2>Atualizações</h2>
+  <div class="topics" [class.menu-recolhido]="!menuAberto()">
+    <aside class="topic-sidebar">
+      <button
+        class="topic-toggle"
+        type="button"
+        [attr.aria-expanded]="menuAberto()"
+        aria-controls="menu-assuntos"
+        [attr.aria-label]="menuAberto() ? 'Recolher menu de assuntos' : 'Abrir menu de assuntos'"
+        [attr.title]="menuAberto() ? 'Recolher menu' : 'Abrir menu'"
+        (click)="menuAberto.set(!menuAberto())"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="16" rx="2" />
+          <path d="M9 4v16" />
+          <path [attr.d]="menuAberto() ? 'm16 9-3 3 3 3' : 'm13 9 3 3-3 3'" />
+        </svg>
+      </button>
+      <nav id="menu-assuntos" class="topic-tree" aria-label="Assuntos" [hidden]="!menuAberto()">
+        <ng-container *ngTemplateOutlet="ramos; context: { $implicit: arvore }" />
+      </nav>
+    </aside>
+
+    <article class="topic-detail" aria-live="polite">
+      <h1>{{ tituloDoItem(item()) }}</h1>
+      @if (previa) { <p><strong>Prévia editorial</strong></p> }
+      @if (item().id === 'atualizacoes') {
         <p><strong>Últimos 30 dias</strong></p>
-        <p>Nenhuma atualização publicada neste período.</p>
+        @if (catalogo() === null) {
+          <p>As atualizações estão indisponíveis no momento.</p>
+        } @else if (catalogo()) {
+          @for (atualizacao of atualizacoes(); track atualizacao.id) {
+            <section>
+              <h3>{{ atualizacao.titulo }}</h3>
+              <time [attr.datetime]="atualizacao.publicadaEm">{{ atualizacao.publicadaEm }}</time>
+              <p>{{ atualizacao.resumo }}</p>
+              @if (atualizacao.efeitosEm; as data) {
+                <p>Início dos efeitos: <time [attr.datetime]="data">{{ data }}</time></p>
+              }
+              <ul>
+                @for (fonte of atualizacao.fontes; track $index) {
+                  <li><a [href]="fonte.url">{{ fonte.titulo }}</a> · {{ fonte.trecho }}</li>
+                }
+              </ul>
+            </section>
+          } @empty {
+            <p>Nenhuma atualização publicada neste período.</p>
+          }
+        } @else {
+          <p>Carregando atualizações…</p>
+        }
+      } @else if (beneficio(); as ficha) {
+        <p>{{ ficha.territorio || ficha.abrangencia }}</p>
+        <h3>Descrição</h3>
+        @if (ficha.descricao; as descricao) {
+          <p>{{ descricao }}</p>
+        }
+        <p>{{ formatarCriterio(ficha.direito) }}</p>
+        @if (ficha.publico; as publico) {
+          <h3>Quem tem direito</h3>
+          <p>{{ formatarCriterio(publico) }}</p>
+        }
+        <h3>Requisitos para obter</h3>
+        <p class="criteria">{{ formatarCriterio(ficha.obtencao) }}</p>
+        <h3>{{ ficha.id.startsWith('eventual-') ? 'Duração e continuidade' : 'Requisitos para manter' }}</h3>
+        <p class="criteria">{{ formatarCriterio(ficha.manutencao) }}</p>
+        @if (ficha.solicitacao; as fluxo) {
+          <h3>Fluxo de atendimento</h3>
+          <ol>
+            @for (passo of fluxo.split('\n'); track $index) {
+              @if (passo.trim()) {
+                <li>{{ passo.trim() }}</li>
+              }
+            }
+          </ol>
+        }
+        <h3>Fontes oficiais</h3>
+        <ul>
+          @for (fonte of ficha.fontes; track $index) {
+            <li><a [href]="fonte.url">{{ fonte.titulo }}</a> · {{ fonte.trecho }}</li>
+          }
+          @if (salarioMinimo(); as salario) {
+            <li><a [href]="salario.fonte.url">{{ salario.fonte.titulo }}</a> · {{ salario.fonte.trecho }}</li>
+          }
+        </ul>
       } @else {
-        <h2>{{ section() === 'PAIF' ? 'Serviço de Proteção e Atendimento Integral à Família' : 'Serviço de Convivência e Fortalecimento de Vínculos' }}</h2>
-        <p>Fichas em preparação.</p>
+        @if (pagina()?.descricao; as descricao) {
+          <p>{{ descricao }}</p>
+        }
+        @if (item().beneficio || !pagina()) {
+          @if (catalogo() === null) {
+            <p>O catálogo está indisponível no momento.</p>
+          } @else if (catalogo()) {
+            <p>Ficha ainda não publicada.</p>
+          } @else {
+            <p>Carregando ficha…</p>
+          }
+        }
+        @if (item().id === 'beneficios' && salarioMinimo(); as salario) {
+          <p><strong>Salário mínimo nacional vigente</strong> {{ formatarMoeda(salario.centavos) }} · <a [href]="salario.fonte.url">{{ salario.fonte.titulo }}</a></p>
+        }
+        @if (item().filhos; as filhos) {
+          <ul>
+            @for (filho of filhos; track filho.id) {
+              <li><a routerLink="/explorar" [queryParams]="{ secao: filho.id, beneficio: null }" queryParamsHandling="merge">{{ tituloDoItem(filho) }}</a></li>
+            }
+          </ul>
+        }
+        @if (pagina()?.fontes; as fontes) {
+          <h3>Fontes oficiais</h3>
+          <ul>
+            @for (fonte of fontes; track $index) {
+              <li><a [href]="fonte.url">{{ fonte.titulo }}</a> · {{ fonte.trecho }}</li>
+            }
+          </ul>
+        }
       }
-    </section>
+    </article>
   </div>
 </main>
+
+<ng-template #ramos let-itens>
+  @for (ramo of itens; track ramo.id) {
+    @if (ramo.filhos) {
+      <details open>
+        <summary>
+          <a routerLink="/explorar" [queryParams]="{ secao: ramo.id, beneficio: null }" queryParamsHandling="merge" [attr.aria-current]="item().id === ramo.id ? 'page' : null">{{ tituloDoItem(ramo) }}</a>
+        </summary>
+        <div class="topic-children">
+          <ng-container *ngTemplateOutlet="ramos; context: { $implicit: ramo.filhos }" />
+        </div>
+      </details>
+    } @else {
+      <a routerLink="/explorar" [queryParams]="{ secao: ramo.id, beneficio: null }" queryParamsHandling="merge" [attr.aria-current]="item().id === ramo.id ? 'page' : null">{{ tituloDoItem(ramo) }}</a>
+    }
+  }
+</ng-template>

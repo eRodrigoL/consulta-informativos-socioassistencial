@@ -31,3 +31,15 @@ Use Node.js 24. Instale as dependências com `npm ci` e inicie o servidor com `n
 ## Publicação estática
 
 Execute `npm run build` para gerar a página. O diretório de publicação é `dist/consulta-cras/browser`. No Cloudflare Pages, configure esse diretório como saída e use `npm run build` como comando de compilação.
+
+### Catálogo de benefícios
+
+A compilação exporta o catálogo quando `AIRTABLE_BASE_ID` e `AIRTABLE_TOKEN` estão configurados no ambiente de build. Use um token com leitura de registros e acesso restrito à base editorial. O navegador recebe apenas o arquivo estático `beneficios.json`. Em desenvolvimento, `npm run exportar:beneficios` permite gerar esse arquivo antes de iniciar o servidor. Sem credenciais, o projeto usa o catálogo disponível no diretório `public`, que começa vazio.
+
+O catálogo inclui fichas do tema **Benefícios** com situação **Aprovada** e referências específicas. O parâmetro **Salário mínimo nacional** usa valor em centavos, datas de vigência e fonte oficial. Marque-o como **Aprovado** após revisão. Use `{{sm:1/4}}` depois da expressão normativa para apresentar o equivalente em reais. Outros exemplos incluem `{{sm:1/2}}` e `{{sm:2}}`. Uma nova build é necessária após aprovar registros novos no Airtable.
+
+Nas fichas, o campo **Quem tem direito** descreve o público. **Critérios para obter** registra as condições de acesso, e **Critérios para manter** registra condicionalidades, atualização cadastral ou duração da concessão. Em **Como solicitar**, escreva uma etapa por linha para exibir o fluxo em ordem. Identifique o órgão responsável em cada etapa, conforme as fontes da ficha.
+
+As páginas gerais usam fichas do tema **Consulta**. O campo **Descrição** e as fundamentações alimentam as páginas gerais e as fichas de benefícios. A seção **Atualizações** usa título, resumo público e data de publicação das revisões marcadas para exibição.
+
+Para conferir conteúdo em revisão na máquina de desenvolvimento, rode `npm run exportar:beneficios -- --rascunhos`, inicie a aplicação com `npm start` e abra `http://localhost:4200/#/explorar?previa=1`. A exportação de prévia é gravada em `.preview`, que só entra na configuração de desenvolvimento. A compilação de produção inclui apenas o catálogo público.
