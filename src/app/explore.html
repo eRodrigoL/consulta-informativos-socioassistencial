@@ -1,26 +1,87 @@
 <main class="wrap explore">
   <a class="back" routerLink="/">Voltar ao início</a>
   <h1>Consulta socioassistencial</h1>
+
   <div class="topics">
     <nav class="topic-tree" aria-label="Assuntos">
-      <button type="button" [attr.aria-pressed]="section() === 'atualizacoes'" (click)="section.set('atualizacoes')">Atualizações</button>
-      <details open>
-        <summary>Proteção Social Básica</summary>
-        <div class="topic-children">
-          <button type="button" [attr.aria-pressed]="section() === 'PAIF'" (click)="section.set('PAIF')">PAIF</button>
-          <button type="button" [attr.aria-pressed]="section() === 'SCFV'" (click)="section.set('SCFV')">SCFV</button>
-        </div>
-      </details>
+      <ng-container *ngTemplateOutlet="ramos; context: { $implicit: arvore }" />
     </nav>
-    <section class="topic-detail" aria-live="polite">
-      @if (section() === 'atualizacoes') {
-        <h2>Atualizações</h2>
+
+    <article class="topic-detail" aria-live="polite">
+      <h2>{{ beneficio()?.titulo || item().titulo || item().rotulo }}</h2>
+      @if (item().id === 'atualizacoes') {
         <p><strong>Últimos 30 dias</strong></p>
         <p>Nenhuma atualização publicada neste período.</p>
+      } @else if (beneficio(); as ficha) {
+        <p>{{ ficha.territorio || ficha.abrangencia }}</p>
+        <h3>O que o benefício garante</h3>
+        <p>{{ formatarCriterio(ficha.direito) }}</p>
+        @if (ficha.solicitacao; as solicitacao) {
+          <h3>Onde solicitar</h3>
+          <p>{{ solicitacao }}</p>
+        }
+        <h3>Quem pode receber</h3>
+        <p>{{ formatarCriterio(ficha.obtencao) }}</p>
+        <h3>{{ ficha.id.startsWith('eventual-') ? 'Duração da concessão' : 'Como manter' }}</h3>
+        <p>{{ formatarCriterio(ficha.manutencao) }}</p>
+        <h3>Fontes oficiais</h3>
+        <ul>
+          @for (fonte of ficha.fontes; track $index) {
+            <li><a [href]="fonte.url">{{ fonte.titulo }}</a> · {{ fonte.trecho }}</li>
+          }
+          @if (salarioMinimo(); as salario) {
+            <li><a [href]="salario.fonte.url">{{ salario.fonte.titulo }}</a> · {{ salario.fonte.trecho }}</li>
+          }
+        </ul>
       } @else {
-        <h2>{{ section() === 'PAIF' ? 'Serviço de Proteção e Atendimento Integral à Família' : 'Serviço de Convivência e Fortalecimento de Vínculos' }}</h2>
-        <p>Fichas em preparação.</p>
+        @if (item().descricao; as descricao) {
+          <p>{{ descricao }}</p>
+        }
+        @if (item().beneficio) {
+          @if (catalogo() === null) {
+            <p>O catálogo está indisponível no momento.</p>
+          } @else if (catalogo()) {
+            <p>Ficha ainda não publicada.</p>
+          } @else {
+            <p>Carregando ficha…</p>
+          }
+        }
+        @if (item().id === 'beneficios' && salarioMinimo(); as salario) {
+          <p><strong>Salário mínimo nacional vigente</strong> {{ formatarMoeda(salario.centavos) }} · <a [href]="salario.fonte.url">{{ salario.fonte.titulo }}</a></p>
+        }
+        @if (item().filhos; as filhos) {
+          <ul>
+            @for (filho of filhos; track filho.id) {
+              <li><a routerLink="/explorar" [queryParams]="{ secao: filho.id }">{{ filho.rotulo }}</a></li>
+            }
+          </ul>
+        }
+        @if (item().fontes; as fontes) {
+          <h3>Fontes oficiais</h3>
+          <ul>
+            @for (fonte of fontes; track fonte.url) {
+              <li><a [href]="fonte.url">{{ fonte.titulo }}</a></li>
+            }
+          </ul>
+        }
       }
-    </section>
+    </article>
   </div>
 </main>
+
+<ng-template #ramos let-itens>
+  @for (ramo of itens; track ramo.id) {
+    @if (ramo.filhos) {
+      <details open>
+        <summary>
+          <a routerLink="/explorar" [queryParams]="{ secao: ramo.id }" [attr.aria-current]="item().id === ramo.id ? 'page' : null">{{ ramo.rotulo }}</a>
+        </summary>
+        <div class="topic-children">
+          <ng-container *ngTemplateOutlet="ramos; context: { $implicit: ramo.filhos }" />
+        </div>
+      </details>
+    } @else {
+      <a routerLink="/explorar" [queryParams]="{ secao: ramo.id }" [attr.aria-current]="item().id === ramo.id ? 'page' : null">{{ ramo.rotulo }}</a>
+    }
+  }
+</ng-template>

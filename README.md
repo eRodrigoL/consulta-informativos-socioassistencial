@@ -31,3 +31,9 @@ Use Node.js 24. Instale as dependências com `npm ci` e inicie o servidor com `n
 ## Publicação estática
 
 Execute `npm run build` para gerar a página. O diretório de publicação é `dist/consulta-cras/browser`. No Cloudflare Pages, configure esse diretório como saída e use `npm run build` como comando de compilação.
+
+### Catálogo de benefícios
+
+A compilação exporta o catálogo quando `AIRTABLE_BASE_ID` e `AIRTABLE_TOKEN` estão configurados no ambiente de build. Use um token com leitura de registros e acesso restrito à base editorial. O navegador recebe apenas o arquivo estático `beneficios.json`. Em desenvolvimento, `npm run exportar:beneficios` permite gerar esse arquivo antes de iniciar o servidor. Sem credenciais, o projeto usa o catálogo disponível no diretório `public`, que começa vazio.
+
+O catálogo inclui fichas do tema **Benefícios** com situação **Aprovada** e referências específicas. O parâmetro **Salário mínimo nacional** usa valor em centavos, datas de vigência e fonte oficial. Marque-o como **Aprovado** após revisão. Use `{{sm:1/4}}` depois da expressão normativa para apresentar o equivalente em reais. Outros exemplos incluem `{{sm:1/2}}` e `{{sm:2}}`. Uma nova build é necessária após aprovar registros novos no Airtable.

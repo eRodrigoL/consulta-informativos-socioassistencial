@@ -5,7 +5,9 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "watch": "ng build --watch --configuration development"
+    "watch": "ng build --watch --configuration development",
+    "exportar:beneficios": "node scripts/exportar-beneficios.mjs",
+    "prebuild": "node -e \"if (process.env.AIRTABLE_BASE_ID || process.env.AIRTABLE_TOKEN) require('node:child_process').execFileSync(process.execPath, ['scripts/exportar-beneficios.mjs'], {stdio: 'inherit'})\""
   },
   "private": true,
   "packageManager": "npm@11.9.0",
