@@ -64,7 +64,9 @@ h1, h2, p { margin: 0; }
 .topic-tree { display: grid; align-content: start; gap: .65rem; padding: .9rem; border-right: 1px solid var(--border); }
 .topic-tree summary { padding: .35rem; font-weight: 700; cursor: pointer; }
 .topic-children { display: grid; gap: .25rem; margin: .2rem 0 0 1.05rem; }
-.topic-tree button {
+.topic-tree a {
+  display: block;
+  text-decoration: none;
   padding: .45rem .65rem;
   border: 0;
   border-radius: .35rem;
@@ -74,8 +76,8 @@ h1, h2, p { margin: 0; }
   text-align: left;
   cursor: pointer;
 }
-.topic-tree button:hover, .topic-tree button[aria-pressed='true'] { background: var(--surface); }
-.topic-tree button[aria-pressed='true'] { font-weight: 750; }
+.topic-tree a:hover, .topic-tree a[aria-current='page'] { background: var(--surface); }
+.topic-tree a[aria-current='page'] { font-weight: 750; }
 .topic-detail { min-height: 12rem; padding: clamp(1rem, 3vw, 2rem); }
 .topic-detail h2 { font: 700 clamp(1.4rem, 3vw, 2rem)/1.2 Georgia, serif; }
 .topic-detail p { margin-top: .65rem; }
@@ -86,3 +88,6 @@ footer { padding-block: 1rem; border-top: 1px solid var(--border); font-size: .8
   .topics { grid-template-columns: 1fr; }
   .topic-tree { border-right: 0; border-bottom: 1px solid var(--border); }
 }
+
+.topic-tree summary a { display: inline; padding: .25rem; }
+.topic-detail h3 { margin: 1.25rem 0 .25rem; }
